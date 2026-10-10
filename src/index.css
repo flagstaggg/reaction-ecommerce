@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+@import 'swiper/css';
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — troque os valores aqui para re-tematizar a loja.     */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Cores */
+  --color-ink: #111111;
+  --color-paper: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-surface-2: #ededed;
+  --color-muted: #757575;
+  --color-line: #e5e5e5;
+  --color-success: #007d48;
+  --color-accent: #ff4b1f;
+
+  /* Tipografia */
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Barlow Condensed', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Layout */
+  --container-shell: 90rem; /* 1440px */
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+  }
+
+  /* Foco visível em todos os elementos interativos (WCAG 2.4.7). */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* Inputs herdam a tipografia da loja. */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder {
+    color: var(--color-muted);
+  }
+
+  /* Remove o "x" nativo do input[type=search] — a loja tem botão próprio. */
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Respeita prefers-reduced-motion globalmente. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities customizadas                                              */
+/* ------------------------------------------------------------------ */
+
+/** Container padrão: no máximo 1440px, 16px de margem lateral no mobile,
+ *  40px no desktop. */
+@utility shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-shell);
+  padding-inline: 16px;
+  @media (width >= 768px) {
+    padding-inline: 40px;
+  }
+}
+
+/** Grade de cards: 14px de gap, conforme o manual de marca. */
+@utility gap-cards {
+  gap: 14px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/** Rolagem fina usada na sidebar de filtros. */
+@utility scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+  }
+}
+
+/** Título display (Barlow Condensed 800, caixa alta). */
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+/**
+ * Recorte de imagem que muda entre mobile e desktop.
+ * Uso: `<img class="object-position-hero" style={{ '--pos-mobile': '60% 30%', '--pos-desktop': '50% 35%' }} />`
+ */
+@utility object-position-hero {
+  object-position: var(--pos-mobile, 50% 50%);
+
+  @media (width >= 768px) {
+    object-position: var(--pos-desktop, 50% 50%);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Swiper — barras de progresso do hero                                */
+/* ------------------------------------------------------------------ */
+
+#hero-pagination .swiper-pagination-bullet {
+  width: 24px;
+  height: 3px;
+  border-radius: 9999px;
+  background-color: rgb(255 255 255 / 0.45);
+  opacity: 1;
+  margin: 0 3px;
+  transition:
+    background-color 0.2s ease,
+    width 0.2s ease;
+}
+
+#hero-pagination .swiper-pagination-bullet-active {
+  background-color: #ffffff;
+}
+
+/* Torna a paginação do Swiper acessível por teclado. */
+#hero-pagination button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hero-pagination .swiper-pagination-bullet {
+    transition: none;
+  }
+}
+
+/** Esconde visualmente, mas mantém para leitores de tela. */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  &:focus,
+  &:focus-visible {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
